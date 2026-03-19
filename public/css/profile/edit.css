@@ -1,0 +1,46 @@
+.requirement { 
+    transition: color 0.3s ease; 
+    display: block; 
+    margin-bottom: 2px; 
+    font-size: 12px; 
+}
+
+.text-success { 
+    color: #10b981 !important; 
+}
+
+.text-danger { 
+    color: #ef4444 !important; 
+}
+
+.mt-2 { 
+    margin-top: 0.5rem; 
+}
+
+.d-none { 
+    display: none; 
+}
+
+/* Password field container */
+.password-field-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #777;
+    font-size: 1.2rem;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+}
+.toggle-password:hover {
+    color: #111;
+}
+.password-field-container .form-control {
+    padding-right: 45px;
+}

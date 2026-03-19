@@ -1,0 +1,185 @@
+:root {
+    --admin-primary: #3483fa;
+    --admin-bg: #f5f5f5;
+    --admin-border: #ddd;
+    --admin-text: #333;
+}
+
+.admin-page-bg { 
+    background: var(--admin-bg); 
+    min-height: 100vh; 
+    padding: 40px 0; 
+    font-family: 'Poppins', sans-serif; 
+}
+
+.admin-card { 
+    background: #fff; 
+    border-radius: 8px; 
+    border: 1px solid var(--admin-border); 
+    padding: 32px; 
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1); 
+}
+
+.admin-header { 
+    margin-bottom: 32px; 
+    border-bottom: 1px solid var(--admin-border); 
+    padding-bottom: 16px; 
+}
+
+.admin-header h1 { 
+    font-size: 1.5rem; 
+    font-weight: 600; 
+    color: var(--admin-text); 
+    margin: 0; 
+}
+
+.admin-header p { 
+    color: #666; 
+    font-size: 0.9rem; 
+    margin-top: 4px; 
+}
+
+.form-section-title { 
+    font-size: 1.1rem; 
+    font-weight: 600; 
+    color: var(--admin-text); 
+    margin-bottom: 20px; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+}
+
+.form-section-title i { 
+    color: var(--admin-primary); 
+}
+
+.form-label { 
+    font-size: 0.9rem; 
+    font-weight: 600; 
+    color: var(--admin-text); 
+    margin-bottom: 8px; 
+}
+
+.form-control { 
+    border-radius: 6px; 
+    border: 1px solid #ddd; 
+    padding: 10px 12px; 
+    font-size: 0.95rem; 
+    transition: border-color 0.2s; 
+}
+
+.form-control:focus { 
+    border-color: var(--admin-primary); 
+    box-shadow: none; 
+}
+
+.talla-checkbox-group { 
+    display: flex; 
+    gap: 12px; 
+    flex-wrap: wrap; 
+    margin-top: 8px; 
+}
+
+.talla-item { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    min-width: 50px; 
+    height: 40px; 
+    border: 1px solid #ddd; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    transition: 0.2s; 
+    position: relative;
+}
+
+.talla-item input { 
+    position: absolute; 
+    opacity: 0; 
+    cursor: pointer; 
+}
+
+.talla-item span { 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+    color: #666; 
+}
+
+.talla-item:hover { 
+    background: #f8f9fa; 
+}
+
+.talla-item.selected { 
+    border-color: var(--admin-primary); 
+    background: rgba(52, 131, 250, 0.05); 
+}
+
+.talla-item.selected span { 
+    color: var(--admin-primary); 
+}
+
+.file-drop-area { 
+    border: 2px dashed #ddd; 
+    border-radius: 8px; 
+    padding: 30px; 
+    text-align: center; 
+    background: #fafafa; 
+    cursor: pointer; 
+    transition: 0.2s; 
+}
+
+.file-drop-area:hover { 
+    border-color: 
+    var(--admin-primary); 
+    background: #fff; 
+}
+
+.file-drop-area i { 
+    font-size: 2rem; 
+    color: #bbb; 
+    margin-bottom: 12px; 
+    display: block; 
+}
+
+.file-drop-area span { 
+    font-size: 0.9rem; 
+    color: #666; 
+}
+
+.btn-save { 
+    background: var(--admin-primary); 
+    color: #fff; 
+    border: none; 
+    border-radius: 6px; 
+    padding: 12px 32px; 
+    font-weight: 600; 
+    transition: 0.2s; 
+}
+
+.btn-save:hover { 
+    background: #2968c8; 
+}
+
+.btn-back { 
+    background: transparent; 
+    color: var(--admin-primary); 
+    border: none; 
+    font-size: 0.9rem; 
+    font-weight: 600; 
+    text-decoration: none; 
+}
+
+.btn-back:hover { 
+    text-decoration: underline; 
+}
+
+.error-message { 
+    color: #ef4444; 
+    font-size: 0.8rem; 
+    margin-top: 4px; 
+    display: block; 
+}
+
+.d-none { 
+    display: none !important; 
+}
