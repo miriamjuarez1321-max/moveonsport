@@ -1,0 +1,137 @@
+.auth-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    max-width: 450px;
+    margin: 60px auto;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-header i {
+    font-size: 50px;
+    color: #4CAF50;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.auth-header h2 {
+    font-weight: 700;
+    color: #111;
+}
+
+.code-input-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 30px 0;
+}
+
+.code-input-single {
+    width: 50px;
+    height: 60px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    transition: all 0.3s;
+}
+
+.code-input-single:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
+    outline: none;
+}
+
+.btn-auth {
+    width: 100%;
+    padding: 14px;
+    background: #0b3d2e;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-auth:hover {
+    background: #082d22;
+    transform: translateY(-2px);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Password styles */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    padding-right: 45px !important;
+}
+
+.toggle-password-btn {
+    position: absolute;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: color 0.2s;
+}
+
+.toggle-password-btn:hover {
+    color: #0b3d2e;
+}
+
+.password-requirements {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.requirement-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+    transition: all 0.3s;
+}
+
+.requirement-item:last-child {
+    margin-bottom: 0;
+}
+
+.requirement-item i {
+    font-size: 14px;
+}
+
+.requirement-item.valid {
+    color: #4CAF50;
+}
+
+.requirement-item.invalid {
+    color: #ef4444;
+}
+
