@@ -146,8 +146,8 @@
 
                 <!-- Botones -->
                 <div class="d-flex align-items-center justify-content-between mt-5 pt-4 border-top">
-                    <a id="btn-back-dynamic" href="{{ route('collections.' . ($categoria ?? 'hombre')) }}" class="btn-back">
-                        <i class="bi bi-arrow-left me-1"></i> Volver al listado
+                    <a href="{{ route('admin.products.index') }}" class="btn-back">
+                        <i class="bi bi-arrow-left me-1"></i> Volver a gestión de productos
                     </a>
                     <button type="submit" class="btn-save">Publicar producto</button>
                 </div>
@@ -159,8 +159,8 @@
 
 <script>
     const subcategorias = {
-        'hombre': ['Playeras', 'Pans y Short', 'Conjuntos'],
-        'mujer': ['Playeras', 'Pans y Short', 'Conjuntos'],
+        'hombre': ['Playeras', 'Pans y Short', 'Conjuntos', 'Tenis', 'Sudaderas'],
+        'mujer': ['Playeras', 'Pans y Short', 'Conjuntos', 'Tenis', 'Sudaderas'],
         'accesorios': ['Mochilas', 'Botellas', 'Gorras']
     };
 
@@ -184,11 +184,7 @@
             });
         }
 
-        // Actualizar link de volver dinámicamente
-        if (btnBack) {
-            const baseUrl = "{{ url('/colecciones') }}";
-            btnBack.href = `${baseUrl}/${categoria}`;
-        }
+        // El botón de retroceso ahora es estático, siempre va a gestión de productos
 
         // Manejar tallas para accesorios
         if (categoria === 'accesorios') {

@@ -7,7 +7,6 @@
         <div class="footer-support">
             <h4>Atención al cliente</h4>
             <ul>
-                <li><a href="{{ route('comentarios.index') }}">Comentarios</a></li>
                 <li><a href="{{ route('legal.devoluciones') }}">Cambios y devoluciones</a></li>
                 <li><a href="{{ route('legal.privacidad') }}">Políticas y privacidad</a></li>
                 <li><a href="{{ route('legal.terminos') }}">Términos y condiciones</a></li>

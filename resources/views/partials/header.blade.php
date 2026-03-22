@@ -6,6 +6,20 @@
             <span>MoveOn Sport</span>
         </div>
 
+        <div class="header-search-container">
+            <form action="{{ route('collections') }}" method="GET" class="search-form">
+                <div class="search-input-group">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Buscar productos..." class="search-input">
+                    <button type="submit" class="search-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <nav class="nav-links collapse" id="navMenu">
             <a href="{{ route('home') }}">Inicio</a>
             <a href="{{ route('collections') }}">Colecciones</a>
@@ -23,8 +37,12 @@
                         </svg>
                         @php $cartCount = auth()->user()->carritos()->sum('cantidad'); @endphp
                         @if($cartCount > 0)
-                            <span style="position: absolute; top: 0; right: 0; background: #ef4444; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 2px solid #003020;">
+                            <span class="cart-count-badge" style="position: absolute; top: 0; right: 0; background: #ef4444; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 2px solid #003020;">
                                 {{ $cartCount }}
+                            </span>
+                        @else
+                            <span class="cart-count-badge d-none" style="position: absolute; top: 0; right: 0; background: #ef4444; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 2px solid #003020;">
+                                0
                             </span>
                         @endif
                     </a>
@@ -62,6 +80,10 @@
                                     <a href="{{ route('admin.users.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; color: #374151; border-radius: 8px; text-decoration: none; font-size: 14px;">
                                         <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                                         Gestión de usuarios
+                                    </a>
+                                    <a href="{{ route('admin.orders.index') }}" class="dropdown-item" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; color: #374151; border-radius: 8px; text-decoration: none; font-size: 14px;">
+                                        <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+                                        Validación de pagos
                                     </a>
                                     <div style="height: 1px; background: #e5e7eb; margin: 6px 0;"></div>
                                 @endif
