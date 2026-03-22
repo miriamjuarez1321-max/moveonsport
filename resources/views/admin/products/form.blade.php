@@ -112,15 +112,18 @@
                         </div>
 
                         <div class="col-md-6" id="tallas-container">
-                            <label class="form-label">Tallas y Stock *</label>
-                            <div class="talla-stock-grid">
-                                @foreach(['CH', 'M', 'G', 'XG'] as $talla)
+                            <label class="form-label" id="talla-label">Tallas y Stock *</label>
+                            <div class="talla-stock-grid" id="talla-stock-grid">
+                                @php
+                                    $allTallas = ['CH', 'M', 'G', 'XG'];
+                                @endphp
+                                @foreach($allTallas as $talla)
                                     @php
                                         $tallaData = isset($prenda) ? $prenda->tallas->where('talla', $talla)->first() : null;
                                         $stockValue = old("stocks.$talla", $tallaData->stock ?? 0);
                                         $checked = old("tallas_selected.$talla") || ($tallaData && $tallaData->stock > 0);
                                     @endphp
-                                    <div class="talla-stock-item {{ $checked ? 'selected' : '' }}">
+                                    <div class="talla-stock-item {{ $checked ? 'selected' : '' }}" data-talla-orig="{{ $talla }}">
                                         <div class="d-flex align-items-center gap-2 mb-2">
                                             <input type="checkbox" name="tallas_selected[]" value="{{ $talla }}" class="talla-check" id="check_{{ $talla }}" {{ $checked ? 'checked' : '' }}>
                                             <label for="check_{{ $talla }}" class="m-0 fw-bold">{{ $talla }}</label>
@@ -134,6 +137,41 @@
                                 La suma del stock por tallas no puede ser mayor al stock actual del producto.
                             </div>
                             @error('tallas_selected') <span class="error-message">{{ $message }}</span> @enderror
+                        </div>
+
+                        <!-- SECCIÓN TENIS: Variantes Dinámicas -->
+                        <div class="col-12 d-none" id="variantes-tenis-container">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label class="form-label mb-0">Números y Stock (Calzado) *</label>
+                                <button type="button" class="btn btn-sm btn-outline-success" onclick="addVarianteRow()">
+                                    <i class="bi bi-plus-circle me-1"></i> Agregar número
+                                </button>
+                            </div>
+                            
+                            <div id="variantes-list" class="row g-2">
+                                <!-- Las filas de variantes se insertarán aquí dinámicamente -->
+                                @if(isset($prenda) && $prenda->variantes->count() > 0)
+                                    @foreach($prenda->variantes as $idx => $variante)
+                                        <div class="col-md-4 variante-row">
+                                            <div class="p-3 border rounded bg-light position-relative">
+                                                <button type="button" class="btn-close position-absolute top-0 end-0 m-2" style="font-size: 0.7rem;" onclick="removeVarianteRow(this)"></button>
+                                                <div class="mb-2">
+                                                    <label class="small text-muted">Número</label>
+                                                    <input type="text" name="variantes_numero[]" class="form-control form-control-sm" value="{{ $variante->valor }}" required placeholder="ej: 23.5">
+                                                </div>
+                                                <div>
+                                                    <label class="small text-muted">Stock</label>
+                                                    <input type="number" name="variantes_stock[]" class="form-control form-control-sm" value="{{ $variante->stock }}" required min="0">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                            <div id="variante-stock-error-message" class="error-message d-none" style="margin-top: 10px;">
+                                La suma de stock por número excede el stock total disponible.
+                            </div>
+                            <p class="text-muted small mt-2"><i class="bi bi-info-circle me-1"></i> Ingresa números enteros o con decimales (ej. 24, 24.5).</p>
                         </div>
 
                         <div class="col-md-6">
@@ -175,8 +213,8 @@
                             <i class="bi bi-arrow-left me-1"></i> Cancelar
                         </a>
                     @else
-                        <a id="btn-back-dynamic" href="{{ route('collections.' . ($categoria ?? 'hombre')) }}" class="btn-back">
-                            <i class="bi bi-arrow-left me-1"></i> Volver al listado
+                        <a href="{{ route('admin.products.index') }}" class="btn-back">
+                            <i class="bi bi-arrow-left me-1"></i> Volver a gestión de productos
                         </a>
                     @endif
                     <button type="submit" class="btn-save">
@@ -191,8 +229,8 @@
 
 <script>
     const subcategorias = {
-        'hombre': ['Playeras', 'Pans y Short', 'Conjuntos', 'Tenis'],
-        'mujer': ['Playeras', 'Pans y Short', 'Conjuntos', 'Tenis'],
+        'hombre': ['Playeras', 'Pans y Short', 'Conjuntos', 'Tenis', 'Sudaderas'],
+        'mujer': ['Playeras', 'Pans y Short', 'Conjuntos', 'Tenis', 'Sudaderas'],
         'accesorios': ['Mochilas', 'Botellas', 'Gorras']
     };
 
@@ -219,31 +257,62 @@
             });
         }
 
-        // Actualizar link de volver dinámicamente si no estamos editando
-        if (btnBack) {
-            const baseUrl = "{{ url('/colecciones') }}";
-            btnBack.href = `${baseUrl}/${categoria}`;
-        }
+        // El botón volver a gestión siempre redirige a admin.products.index, por lo que no es necesario modificar dinámicamente este enlace.
 
-        // Manejar tallas para accesorios
+        // Manejar tallas para accesorios y detectar Tenis
+        const variTenisContainer = document.getElementById('variantes-tenis-container');
+        const isTenis = (tipoSelect.value || '').toLowerCase() === 'tenis';
+
         if (categoria === 'accesorios') {
             tallasContainer.classList.add('d-none');
+            variTenisContainer.classList.add('d-none');
             hiddenTallaInput.value = 'N/A';
-            tallaChecks.forEach(cb => {
-                cb.checked = false;
-                cb.parentElement.classList.remove('selected');
-            });
+        } else if (isTenis) {
+            tallasContainer.classList.add('d-none');
+            variTenisContainer.classList.remove('d-none');
+            // Si no hay filas, agregar una inicial
+            if (document.querySelectorAll('.variante-row').length === 0) {
+                addVarianteRow();
+            }
         } else {
             tallasContainer.classList.remove('d-none');
+            variTenisContainer.classList.add('d-none');
             updateHiddenTallaInput();
         }
+    }
+
+    function addVarianteRow() {
+        const list = document.getElementById('variantes-list');
+        const col = document.createElement('div');
+        col.className = 'col-md-4 variante-row';
+        col.innerHTML = `
+            <div class="p-3 border rounded bg-light position-relative">
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-2" style="font-size: 0.7rem;" onclick="removeVarianteRow(this)"></button>
+                <div class="mb-2">
+                    <label class="small text-muted">Número</label>
+                    <input type="text" name="variantes_numero[]" class="form-control form-control-sm" required placeholder="ej: 23.5">
+                </div>
+                <div>
+                    <label class="small text-muted">Stock</label>
+                    <input type="number" name="variantes_stock[]" class="form-control form-control-sm variante-stock-input" required min="1" value="1" oninput="validateStockSum()">
+                </div>
+            </div>
+        `;
+        list.appendChild(col);
+        validateStockSum();
+    }
+
+    function removeVarianteRow(btn) {
+        btn.closest('.variante-row').remove();
+        validateStockSum();
     }
 
     function updateHiddenTallaInput() {
         const selectedTallas = Array.from(document.querySelectorAll('.talla-check:checked'))
                                     .map(cb => cb.value)
                                     .join(', ');
-        document.getElementById('talla').value = selectedTallas;
+        const hiddenInput = document.getElementById('talla');
+        if (hiddenInput) hiddenInput.value = selectedTallas;
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -272,19 +341,37 @@
 
         function validateStockSum() {
             const stockActual = parseInt(stockActualInput.value) || 0;
-            let sumTallas = 0;
+            const tipoSelect = document.getElementById('tipo');
+            const isTenis = (tipoSelect.value || '').toLowerCase() === 'tenis';
+            const variStockErrorMessage = document.getElementById('variante-stock-error-message');
             
-            document.querySelectorAll('.talla-check:checked').forEach(cb => {
-                const stockInput = cb.closest('.talla-stock-item').querySelector('.stock-input');
-                sumTallas += parseInt(stockInput.value) || 0;
-            });
+            let sumTotal = 0;
+            
+            if (isTenis) {
+                document.querySelectorAll('.variante-stock-input').forEach(input => {
+                    sumTotal += parseInt(input.value) || 0;
+                });
 
-            if (sumTallas > stockActual) {
-                stockErrorMessage.classList.remove('d-none');
-                return false;
+                if (sumTotal > stockActual) {
+                    variStockErrorMessage.classList.remove('d-none');
+                    return false;
+                } else {
+                    variStockErrorMessage.classList.add('d-none');
+                    return true;
+                }
             } else {
-                stockErrorMessage.classList.add('d-none');
-                return true;
+                document.querySelectorAll('.talla-check:checked').forEach(cb => {
+                    const stockInput = cb.closest('.talla-stock-item').querySelector('.stock-input');
+                    sumTotal += parseInt(stockInput.value) || 0;
+                });
+
+                if (sumTotal > stockActual) {
+                    stockErrorMessage.classList.remove('d-none');
+                    return false;
+                } else {
+                    stockErrorMessage.classList.add('d-none');
+                    return true;
+                }
             }
         }
 
