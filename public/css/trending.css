@@ -1,0 +1,390 @@
+
+/* Colores y Variables */
+:root {
+    --hero-gradient-1: #0F6466;
+    --hero-gradient-2: #2C3532;
+    --hero-gradient-3: #0b3d2e;
+    --sport-blue: #00AEEF;
+    --text-light: #ffffff;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --card-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Hero Section New */
+.hero-new {
+    position: relative;
+    min-height: 80vh; 
+    padding: 120px 0 60px;
+    width: 100%;
+    overflow: hidden;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(11, 61, 46, 0.7), rgba(46, 89, 76, 0.7)), url('/images/home/fondo-home.jpeg');
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+}
+
+.hero-light-effect {
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 80%;
+    height: 140%;
+    background: radial-gradient(circle at center, rgba(0, 174, 239, 0.2) 0%, transparent 70%);
+    transform: rotate(-15deg);
+    filter: blur(60px);
+    z-index: -1;
+    animation: pulseLight 8s infinite alternate;
+}
+
+@keyframes pulseLight {
+    0% { opacity: 0.5; transform: rotate(-15deg) scale(1); }
+    100% { opacity: 0.8; transform: rotate(-10deg) scale(1.1); }
+}
+
+.hero-title {
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    letter-spacing: -2px;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    line-height: 1.6;
+    max-width: 500px;
+}
+
+.btn-hero-primary {
+    display: inline-block;
+    padding: 14px 40px;
+    background: var(--text-light);
+    color: var(--hero-gradient-3);
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.btn-hero-primary:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    background: var(--sport-blue);
+    color: white;
+}
+
+/* Hero Carousel New */
+.hero-carousel-container {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin-left: auto;
+    overflow: hidden;
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.hero-carousel-track {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+}
+
+.hero-carousel-item {
+    flex: 0 0 100%;
+    width: 100%;
+    text-decoration: none;
+    display: block;
+}
+
+.carousel-card-inner {
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.carousel-card-inner img {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.hero-carousel-item:hover .carousel-card-inner img {
+    transform: scale(1.05);
+}
+
+.carousel-card-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px 20px 20px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: white;
+}
+
+.carousel-product-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.carousel-product-price {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--sport-blue);
+}
+
+/* Carousel Controls */
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.carousel-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.3s ease;
+}
+
+.carousel-btn:hover {
+    background: var(--sport-blue);
+    border-color: var(--sport-blue);
+    transform: scale(1.1);
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    background: var(--sport-blue);
+    width: 24px;
+    border-radius: 4px;
+}
+
+/* Re-ajuste de Hero para el carrusel */
+@media (max-width: 991px) {
+    .hero-carousel-container {
+        margin: 40px auto 0;
+        max-width: 400px;
+    }
+}
+
+/* Promo Section New */
+.promo-video-section {
+    padding: 100px 0;
+    background: #f8fafc;
+}
+
+.promo-card {
+    background: white;
+    border-radius: 24px;
+    padding: 50px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    transition: all 0.4s ease;
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+.promo-card:hover {
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    transform: translateY(-5px);
+}
+
+.promo-content {
+    padding-right: 30px;
+}
+
+.promo-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--hero-gradient-3);
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.promo-subtitle {
+    font-size: 1.15rem;
+    color: #64748b;
+    margin-bottom: 35px;
+    line-height: 1.6;
+}
+
+.btn-promo-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 35px;
+    background: var(--hero-gradient-3);
+    color: white;
+    border-radius: 50px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(11, 61, 46, 0.3);
+}
+
+.btn-promo-cta:hover {
+    transform: translateX(5px);
+    background: var(--hero-gradient-1);
+    box-shadow: 0 12px 25px rgba(15, 100, 102, 0.4);
+    color: white;
+}
+
+.promo-video-wrapper {
+    position: relative;
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.promo-video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.promo-video-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+}
+
+.promo-video-container:hover .promo-video-thumb {
+    transform: scale(1.05);
+}
+
+.promo-video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.promo-video-container:hover .promo-video-overlay {
+    background: rgba(0,0,0,0.4);
+}
+
+.btn-play-video {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    color: var(--hero-gradient-3);
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    padding-left: 5px;
+}
+
+.promo-video-container:hover .btn-play-video {
+    transform: scale(1.15);
+    background: var(--hero-gradient-3);
+    color: white;
+}
+
+@media (max-width: 991px) {
+    .promo-card {
+        padding: 30px 20px;
+        text-align: center;
+    }
+    .promo-content {
+        padding-right: 0;
+        margin-bottom: 20px;
+    }
+    .promo-title {
+        font-size: 2.2rem;
+    }
+    .btn-promo-cta {
+        margin-bottom: 10px;
+    }
+}
+
+/* Animations */
+.animate__animated {
+    animation-duration: 1s;
+}
+
+@media (max-width: 991px) {
+    .hero-new {
+        height: auto;
+        padding: 120px 0 80px;
+    }
+    .hero-title {
+        font-size: 3.5rem;
+        text-align: center;
+    }
+    .hero-subtitle {
+        text-align: center;
+        margin: 0 auto;
+    }
+    .hero-btns {
+        text-align: center;
+    }
+}
