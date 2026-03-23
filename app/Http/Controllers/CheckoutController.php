@@ -84,9 +84,16 @@ class CheckoutController extends Controller
                     ]);
 
                     // Descontar stock de la talla específica
-                    $tallaStock = $item->prenda->tallas()->where('talla', $item->talla)->first();
-                    if ($tallaStock) {
-                        $tallaStock->decrement('stock', $item->cantidad);
+                    if (strtolower($item->prenda->tipo) == 'tenis') {
+                        $variante = $item->prenda->variantes()->where('valor', $item->talla)->first();
+                        if ($variante) {
+                            $variante->decrement('stock', $item->cantidad);
+                        }
+                    } else {
+                        $tallaStock = $item->prenda->tallas()->where('talla', $item->talla)->first();
+                        if ($tallaStock) {
+                            $tallaStock->decrement('stock', $item->cantidad);
+                        }
                     }
                 }
 

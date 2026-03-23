@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
 use App\Http\Requests\StorePrendaRequest;
+use App\Models\VarianteProducto;
 
 class AdminProductController extends Controller
 {
@@ -32,6 +33,16 @@ class AdminProductController extends Controller
     {
         try {
             $data = $request->validated();
+            
+            // Validar suma de stock para Tenis
+            if (isset($data['tipo']) && strtolower($data['tipo']) == 'tenis' && $request->has('variantes_stock')) {
+                $totalStock = $data['stock'] ?? 0;
+                $sumVariantes = array_sum($request->variantes_stock);
+                if ($sumVariantes > $totalStock) {
+                    return back()->withInput()->with('error', 'La suma de stock por número excede el stock total disponible.');
+                }
+            }
+
             unset($data['imagen']);
 
             if ($request->hasFile('imagen')) {
@@ -56,9 +67,31 @@ class AdminProductController extends Controller
                         ['stock' => $stock]
                     );
                 }
-            } else {
-                // Si no hay ninguna seleccionada, eliminar todas las tallas
+            } elseif (strtolower($prenda->tipo) != 'tenis') {
+                // Si no es tenis y no hay tallas seleccionadas, eliminar todas las tallas
                 $prenda->tallas()->delete();
+            }
+
+            // Actualizar variantes dinámicas (Tenis)
+            if (strtolower($prenda->tipo) == 'tenis') {
+                $prenda->variantes()->delete();
+
+                if ($request->has('variantes_numero')) {
+                    $variantesArray = [];
+                    foreach ($request->variantes_numero as $index => $numero) {
+                        $stock = $request->variantes_stock[$index] ?? 0;
+                        if (!empty($numero)) {
+                            $prenda->variantes()->create([
+                                'tipo' => 'numero',
+                                'valor' => $numero,
+                                'stock' => $stock
+                            ]);
+                            $variantesArray[] = $numero;
+                        }
+                    }
+                    // Actualizar campo talla para fallback en cards
+                    $prenda->update(['talla' => implode(', ', $variantesArray)]);
+                }
             }
 
             return redirect()->route('admin.products.index')->with('success', 'Producto actualizado correctamente.');

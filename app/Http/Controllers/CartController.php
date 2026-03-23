@@ -33,8 +33,13 @@ class CartController extends Controller
 
             // Validar stock disponible
             if ($talla) {
-                $tallaRecord = $prenda->tallas()->where('talla', $talla)->first();
-                $stockDisponible = $tallaRecord ? $tallaRecord->stock : 0;
+                if (strtolower($prenda->tipo) == 'tenis') {
+                    $variante = $prenda->variantes()->where('valor', $talla)->first();
+                    $stockDisponible = $variante ? $variante->stock : 0;
+                } else {
+                    $tallaRecord = $prenda->tallas()->where('talla', $talla)->first();
+                    $stockDisponible = $tallaRecord ? $tallaRecord->stock : 0;
+                }
             } else {
                 $stockDisponible = $prenda->stock;
             }
@@ -108,8 +113,13 @@ class CartController extends Controller
             $prenda = $carrito->prenda;
             $stockDisponible = $prenda->stock;
             if ($carrito->talla) {
-                $tallaRecord = $prenda->tallas()->where('talla', $carrito->talla)->first();
-                if ($tallaRecord) $stockDisponible = $tallaRecord->stock;
+                if (strtolower($prenda->tipo) == 'tenis') {
+                    $variante = $prenda->variantes()->where('valor', $carrito->talla)->first();
+                    if ($variante) $stockDisponible = $variante->stock;
+                } else {
+                    $tallaRecord = $prenda->tallas()->where('talla', $carrito->talla)->first();
+                    if ($tallaRecord) $stockDisponible = $tallaRecord->stock;
+                }
             }
 
             if ($request->cantidad > $stockDisponible) {

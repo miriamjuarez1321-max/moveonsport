@@ -41,8 +41,10 @@
                         
                         <div class="item-details">
                             <h3>{{ $item->prenda->nombre }}</h3>
-                            @if(in_array($item->prenda->categoria, ['hombre', 'mujer']))
-                                <p>Talla: {{ explode(',', $item->prenda->talla)[0] }} | Color: {{ $item->prenda->color }}</p>
+                            @if(strtolower($item->prenda->tipo ?? '') == 'tenis')
+                                <p>Número: {{ $item->talla }} | Color: {{ $item->prenda->color }}</p>
+                            @elseif(in_array($item->prenda->categoria, ['hombre', 'mujer']))
+                                <p>Talla: {{ $item->talla }} | Color: {{ $item->prenda->color }}</p>
                             @endif
                             <div class="item-price">${{ number_format($item->prenda->precio_venta, 2) }}</div>
                         </div>

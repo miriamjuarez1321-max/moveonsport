@@ -52,9 +52,15 @@
                 <div class="price">${{ number_format($prenda->precio_venta, 2) }}</div>
 
                 <div class="sizes">
-                    @foreach(explode(',', $prenda->talla) as $talla)
-                        <span>{{ trim($talla) }}</span>
-                    @endforeach
+                    @if(strtolower($prenda->tipo ?? '') == 'tenis')
+                        @foreach($prenda->variantes->where('stock', '>', 0) as $variante)
+                            <span>{{ $variante->valor }}</span>
+                        @endforeach
+                    @else
+                        @foreach(explode(',', $prenda->talla) as $talla)
+                            <span>{{ trim($talla) }}</span>
+                        @endforeach
+                    @endif
                 </div>
 
                 <form action="{{ route('cart.add') }}" method="POST" style="margin: 0; padding: 0;">
@@ -71,3 +77,58 @@
 </section>
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addButtons = document.querySelectorAll('.cart-btn');
+    
+    addButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            const formData = new FormData(form);
+            const originalText = this.innerHTML;
+            
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.success) {
+                    if (typeof showToast === 'function') {
+                        showToast(data.message);
+                    }
+                    // Actualizar contador del carrito
+                    const cartBadge = document.querySelector('.cart-count-badge');
+                    if (cartBadge && data.cart_count !== undefined) {
+                        cartBadge.textContent = data.cart_count;
+                        cartBadge.classList.remove('d-none');
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error))
+            .finally(() => {
+                this.disabled = false;
+                this.innerHTML = originalText;
+            });
+        });
+    });
+});
+</script>
+@endpush

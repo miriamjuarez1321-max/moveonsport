@@ -82,8 +82,34 @@
             }
         }
 
-        // Prevención de Doble Click Global
+        // Prevención Global y Salvaguarda de Tallas
         document.addEventListener('DOMContentLoaded', function () {
+            // Interceptar clicks en botones de añadir al carrito que requieren talla (con CAPTURE para ganar a otros scripts)
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.cart-btn');
+                if (btn) {
+                    const form = btn.closest('.requires-size-form');
+                    if (form) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        
+                        showToast("⚠️ Elige una talla o entra a ver más detalles para elegir una talla.");
+                        
+                        const toast = document.getElementById('cart-toast');
+                        if (toast) {
+                            toast.style.background = '#f59e0b';
+                            toast.querySelector('i').className = 'bi bi-info-circle-fill';
+                            setTimeout(() => {
+                                toast.style.background = '';
+                                toast.querySelector('i').className = 'bi bi-check-circle-fill';
+                            }, 3500);
+                        }
+                        return false;
+                    }
+                }
+            }, true);
+
+            // Prevención de Doble Click para formas normales
             document.querySelectorAll('form').forEach(form => {
                 form.addEventListener('submit', function (e) {
                     if (this.dataset.submitted === 'true') {
@@ -91,6 +117,8 @@
                         return;
                     }
                     this.dataset.submitted = 'true';
+
+
                     
                     // Encontrar el botón de submit que activó el form (si existe)
                     const submitBtn = document.activeElement && document.activeElement.type === 'submit' 

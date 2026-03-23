@@ -41,7 +41,7 @@ class StorePrendaRequest extends FormRequest
             }],
             'talla' => 'required|string|max:50',
             'color' => 'required|string|max:50',
-            'imagen' => $this->isMethod('POST') ? 'required|image|mimes:jpeg,png,jpg,gif|max:2048' : 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'imagen' => $this->isMethod('POST') ? 'required|image|mimes:jpeg,png,jpg,gif|max:10240' : 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
             'categoria' => 'required|in:hombre,mujer,accesorios',
             'tipo' => 'nullable|string|max:100',
         ];

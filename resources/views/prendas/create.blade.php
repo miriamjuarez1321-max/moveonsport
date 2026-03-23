@@ -103,25 +103,33 @@
                         <div class="col-md-6" id="tallas-container">
                             <label class="form-label">Tallas disponibles *</label>
                             <div class="talla-checkbox-group">
-                                <label class="talla-item">
-                                    <input type="checkbox" class="talla-check" value="CH">
-                                    <span>CH</span>
-                                </label>
-                                <label class="talla-item">
-                                    <input type="checkbox" class="talla-check" value="M">
-                                    <span>M</span>
-                                </label>
-                                <label class="talla-item">
-                                    <input type="checkbox" class="talla-check" value="G">
-                                    <span>G</span>
-                                </label>
-                                <label class="talla-item">
-                                    <input type="checkbox" class="talla-check" value="XG">
-                                    <span>XG</span>
-                                </label>
+                                @foreach(['CH', 'M', 'G', 'XG'] as $talla)
+                                    <label class="talla-item">
+                                        <input type="checkbox" class="talla-check" value="{{ $talla }}">
+                                        <span>{{ $talla }}</span>
+                                    </label>
+                                @endforeach
                             </div>
                             <input type="hidden" id="talla" name="talla" value="{{ old('talla') }}">
                             @error('talla') <span class="error-message">{{ $message }}</span> @enderror
+                        </div>
+
+                        <!-- SECCIÓN TENIS: Variantes Dinámicas -->
+                        <div class="col-12 d-none" id="variantes-tenis-container">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label class="form-label mb-0">Números y Stock (Calzado) *</label>
+                                <button type="button" class="btn btn-sm btn-outline-success" onclick="addVarianteRow()">
+                                    <i class="bi bi-plus-circle me-1"></i> Agregar número
+                                </button>
+                            </div>
+                            
+                            <div id="variantes-list" class="row g-2">
+                                <!-- Las filas de variantes se insertarán aquí dinámicamente -->
+                            </div>
+                            <div id="variante-stock-error-message" class="error-message d-none" style="margin-top: 10px;">
+                                La suma de stock por número excede el stock total disponible.
+                            </div>
+                            <p class="text-muted small mt-2"><i class="bi bi-info-circle me-1"></i> Ingresa números enteros o con decimales (ej. 24, 24.5).</p>
                         </div>
 
                         <div class="col-md-6">
@@ -186,25 +194,60 @@
 
         // El botón de retroceso ahora es estático, siempre va a gestión de productos
 
-        // Manejar tallas para accesorios
+        // Manejar tallas para accesorios y detectar Tenis
+        const variTenisContainer = document.getElementById('variantes-tenis-container');
+        const isTenis = (tipoSelect.value || '').toLowerCase() === 'tenis';
+
         if (categoria === 'accesorios') {
             tallasContainer.classList.add('d-none');
+            variTenisContainer.classList.add('d-none');
             hiddenTallaInput.value = 'N/A';
-            tallaChecks.forEach(cb => {
-                cb.checked = false;
-                cb.parentElement.classList.remove('selected');
-            });
+        } else if (isTenis) {
+            tallasContainer.classList.add('d-none');
+            variTenisContainer.classList.remove('d-none');
+            // Si no hay filas, agregar una inicial
+            if (document.querySelectorAll('.variante-row').length === 0) {
+                addVarianteRow();
+            }
         } else {
             tallasContainer.classList.remove('d-none');
+            variTenisContainer.classList.add('d-none');
             updateHiddenTallaInput();
         }
+    }
+
+    function addVarianteRow() {
+        const list = document.getElementById('variantes-list');
+        const col = document.createElement('div');
+        col.className = 'col-md-4 variante-row';
+        col.innerHTML = `
+            <div class="p-3 border rounded bg-light position-relative">
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-2" style="font-size: 0.7rem;" onclick="removeVarianteRow(this)"></button>
+                <div class="mb-2">
+                    <label class="small text-muted">Número</label>
+                    <input type="text" name="variantes_numero[]" class="form-control form-control-sm" required placeholder="ej: 23.5">
+                </div>
+                <div>
+                    <label class="small text-muted">Stock</label>
+                    <input type="number" name="variantes_stock[]" class="form-control form-control-sm variante-stock-input" required min="1" value="1" oninput="validateStockSum()">
+                </div>
+            </div>
+        `;
+        list.appendChild(col);
+        validateStockSum();
+    }
+
+    function removeVarianteRow(btn) {
+        btn.closest('.variante-row').remove();
+        validateStockSum();
     }
 
     function updateHiddenTallaInput() {
         const selectedTallas = Array.from(document.querySelectorAll('.talla-check:checked'))
                                     .map(cb => cb.value)
                                     .join(', ');
-        document.getElementById('talla').value = selectedTallas;
+        const hiddenInput = document.getElementById('talla');
+        if (hiddenInput) hiddenInput.value = selectedTallas;
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -219,7 +262,55 @@
                     this.parentElement.classList.remove('selected');
                 }
                 updateHiddenTallaInput();
+                validateStockSum();
             });
+        });
+
+        function validateStockSum() {
+            const stockActualInput = document.getElementById('stock');
+            const stockActual = parseInt(stockActualInput.value) || 0;
+            const tipoSelect = document.getElementById('tipo');
+            const isTenis = (tipoSelect.value || '').toLowerCase() === 'tenis';
+            const stockErrorMessage = document.getElementById('stock-error-message') || { classList: { add: () => {}, remove: () => {} } }; // Fallback
+            const variStockErrorMessage = document.getElementById('variante-stock-error-message');
+            
+            let sumTotal = 0;
+            
+            if (isTenis) {
+                document.querySelectorAll('.variante-stock-input').forEach(input => {
+                    sumTotal += parseInt(input.value) || 0;
+                });
+
+                if (sumTotal > stockActual) {
+                    variStockErrorMessage.classList.remove('d-none');
+                    return false;
+                } else {
+                    variStockErrorMessage.classList.add('d-none');
+                    return true;
+                }
+            } else {
+                document.querySelectorAll('.talla-check:checked').forEach(cb => {
+                    // En create.blade.php no hay input de stock por talla individual para ropa (parece ser stock global dividido?)
+                    // Re-leyendo el archivo: el stock de ropa se maneja via checkboxes sin input individual en esta vista específica?
+                    // Ah, en create.blade.php (Ropa) solo seleccionan tallas. El stock es global.
+                    // Pero la regla dice que la suma no exceda el total. 
+                    // Si no hay inputs individuales para ropa en esta vista, la validación de suma siempre pasa o no aplica.
+                    // Sin embargo para SHOES sí hay inputs individuales.
+                });
+                return true;
+            }
+        }
+
+        const prendaForm = document.getElementById('prendaForm');
+        const stockActualInput = document.getElementById('stock');
+        
+        stockActualInput.addEventListener('input', validateStockSum);
+
+        prendaForm.addEventListener('submit', function(e) {
+            if (!validateStockSum()) {
+                e.preventDefault();
+                document.getElementById('variante-stock-error-message').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         });
 
         // Inicializar si hay valores previos
