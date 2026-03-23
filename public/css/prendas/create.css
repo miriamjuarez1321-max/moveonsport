@@ -73,6 +73,43 @@
     box-shadow: none; 
 }
 
+.talla-stock-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.talla-stock-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    transition: all 0.2s;
+    background: #fcfcfc;
+}
+
+.talla-stock-item.selected {
+    border-color: var(--admin-primary);
+    background: rgba(52, 131, 250, 0.05);
+    box-shadow: 0 2px 4px rgba(52, 131, 250, 0.1);
+}
+
+.talla-check {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.stock-input {
+    text-align: center;
+    font-weight: 600;
+}
+
+.stock-input:disabled {
+    background: #eee;
+    opacity: 0.5;
+}
+
 .talla-checkbox-group { 
     display: flex; 
     gap: 12px; 
